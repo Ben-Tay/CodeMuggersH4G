@@ -3,23 +3,26 @@ import Navbar from '../components/Navbar';
 import Footer from "../components/Footer";
 
 const MainLayout = () => {
-
   const location = useLocation(); // Get current path location
- 
-  // Check if the current path is '/' or '/login' to show the footer
-  const isHomePage = location.pathname === '/' || location.pathname === '/login' || location.pathname === '/aboutus';
 
-  const isUser = location.pathname.startsWith('/users'); // show user nav bar if logged into user dashboard
+  // Debugging the location.pathname
+  console.log('Current Path:', location.pathname);
+  
+  const isUser = location.pathname.startsWith('/users');
+  const isAdmin = location.pathname.startsWith('/admin');
   
   return (
     <>
-        <Navbar isUser={isUser}/>
-        <Outlet/>
-        {isHomePage && 
-            <Footer/>
-        }
+      <div className="flex flex-col min-h-screen">
+        <Navbar isUser={isUser} isAdmin={isAdmin} />
+        <div className="flex-grow">
+          <Outlet />
+        </div>
+        {/* Show Footer only if not in the user or admin routes */}
+        {!(isUser || isAdmin) && <Footer />}
+      </div>
     </>
-  )
-}
+  );
+};
 
-export default MainLayout
+export default MainLayout;
