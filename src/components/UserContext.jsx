@@ -6,7 +6,11 @@ const UserContext = createContext();
 // Provider component that wraps your app and makes the context available to all child components
 export const UserProvider = ({ children }) => {
   const [users, setUsers] = useState([]); // State to store users
-  const [loggedInUser, setLoggedInUser] = useState(null); // State to store logged-in user
+  const [loggedInUser, setLoggedInUser] = useState(() => {
+    // Check localStorage for a saved user
+    const savedUser = localStorage.getItem('loggedInUser');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
   const fetchUsers = async () => {
     try {
@@ -31,11 +35,13 @@ export const UserProvider = ({ children }) => {
   // Log in a user
   const loginUser = (user) => {
     setLoggedInUser(user); // Store the logged-in user
+    localStorage.setItem('loggedInUser', JSON.stringify(user)); // Persist user in localStorage
   };
 
   // Log out the current user
   const logoutUser = () => {
     setLoggedInUser(null); // Remove the logged-in user
+    localStorage.removeItem('loggedInUser'); // Remove user from localStorage
   };
 
   useEffect(() => {
