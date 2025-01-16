@@ -9,7 +9,9 @@ Design and develop a web-based Minimart and Voucher System for Muhammadiyah Welf
 * Deployed within vercel: 
  https://code-muggers-h4-g.vercel.app/
 * Use any of the user email and password from this api: https://fakestoreapi.com/users 
-* `Test User`:  email: john@gmail.com, password: m38rmF$
+* `Test User`:  
+    * `email:` john@gmail.com
+    * `password:` m38rmF$
 * If you select role `Resident or Admin` it will redirect accordingly to the correct dashboard
 * Due to the JSON data being hosted on the open source api, we did not account for `role` as  key because the api is not built by us, hence changing the data within there may not be ideal
 * DO NOT REFRESH the browser, due to unfamiliarity and time constraints to maintain a database, the state is only maintained in localstorage within the browser session

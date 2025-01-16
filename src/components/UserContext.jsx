@@ -1,69 +1,60 @@
+// UserContext.jsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-// Create a User Context
+// Create the UserContext
 const UserContext = createContext();
 
-// Provider component that wraps your app and makes the context available to all child components
+// Custom hook to access the UserContext
+export const useUsers = () => {
+  return useContext(UserContext);
+};
+
+// UserProvider component to provide context to children
 export const UserProvider = ({ children }) => {
-  const [users, setUsers] = useState([]); // State to store users
-  const [loggedInUser, setLoggedInUser] = useState(() => {
-    // Check localStorage for a saved user
-    const savedUser = localStorage.getItem('loggedInUser');
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+  const [users, setUsers] = useState([]);
+  const [loggedInUser, setLoggedInUser] = useState(null);
 
   const fetchUsers = async () => {
     try {
       const response = await fetch("https://fakestoreapi.com/users");
       const userData = await response.json();
-      setUsers(userData);  // Set fetched users
+      setUsers(userData);
     } catch (error) {
       console.error("Failed to fetch users:", error);
     }
   };
 
-  // Add a new user
   const addUser = (newUser) => {
     setUsers((prevUsers) => [...prevUsers, newUser]);
   };
 
-  // Delete a user
   const deleteUser = (userId) => {
     setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
   };
 
-  // Log in a user
   const loginUser = (user) => {
-    setLoggedInUser(user); // Store the logged-in user
-    localStorage.setItem('loggedInUser', JSON.stringify(user)); // Persist user in localStorage
+      console.log("Logging in user:", user); // Log user being logged in
+
+    setLoggedInUser(user);
+    localStorage.setItem("loggedInUser", JSON.stringify(user));
   };
 
-  // Log out the current user
   const logoutUser = () => {
-    setLoggedInUser(null); // Remove the logged-in user
-    localStorage.removeItem('loggedInUser'); // Remove user from localStorage
+    setLoggedInUser(null);
+    localStorage.removeItem("loggedInUser");
   };
 
   useEffect(() => {
-    fetchUsers(); // Fetch users when the provider is mounted
+    fetchUsers();
+    const storedUser = localStorage.getItem("loggedInUser");
+    if (storedUser) {
+      setLoggedInUser(JSON.parse(storedUser));
+    }
   }, []);
 
   return (
-    <UserContext.Provider value={{ 
-      users, 
-      loggedInUser, 
-      fetchUsers, 
-      addUser, 
-      deleteUser, 
-      loginUser, 
-      logoutUser 
-    }}>
+    <UserContext.Provider value={{ users, loggedInUser, fetchUsers, addUser, deleteUser, loginUser, logoutUser }}>
       {children}
     </UserContext.Provider>
   );
-};
-
-// Custom hook to use User Context
-export const useUsers = () => {
-  return useContext(UserContext);
 };

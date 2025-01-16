@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useProducts } from '../components/ProductContext';
+import { useTransactions } from '../components/TransactionContext';  // Import transaction context for redemption check
 
 const DeleteProduct = () => {
   const { products, deleteProduct } = useProducts();  // Access products and deleteProduct from context
-
+  const { transactions } = useTransactions(); // Access transactions to check if a product has been redeemed
+  
   const [currentPage, setCurrentPage] = useState(1); // State for current page
   const itemsPerPage = 5; // Number of items to show per page
 
@@ -12,7 +14,18 @@ const DeleteProduct = () => {
   const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
   const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
 
+  // Handle the deletion of a product
   const handleDelete = (id) => {
+    // Check if the product has been redeemed by a user
+    const isRedeemed = transactions.some((transaction) => transaction.productId === id);
+
+    if (isRedeemed) {
+      // If the product has been redeemed, alert the user that it cannot be deleted
+      alert('Cannot delete a product that has been redeemed.');
+      return;
+    }
+
+    // Otherwise, proceed to delete the product
     deleteProduct(id);
     alert('Product deleted successfully');
   };

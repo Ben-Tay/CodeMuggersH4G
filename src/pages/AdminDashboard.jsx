@@ -1,45 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { useTransactions } from '../components/TransactionContext';
-import { useProducts } from '../components/ProductContext'; 
-import { useUsers } from '../components/UserContext'; 
-import { FaBox } from 'react-icons/fa'; 
+import React from 'react';
+import { FaBox } from 'react-icons/fa';
 import { CiUser } from "react-icons/ci";
-import { Pie } from 'react-chartjs-2'; 
+import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { useProducts } from '../components/ProductContext';
+import { useUsers } from '../components/UserContext';
+import useProductStats from '../components/ProductStats';
 
 // Register necessary components in Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const AdminDashboard = () => {
-  const { transactions } = useTransactions();
-  const { products } = useProducts(); 
-  const { users } = useUsers(); 
-  const [productStats, setProductStats] = useState([]);
-  
-  useEffect(() => {
-    // Calculate product stats based on redeemed transactions
-    const calculateProductStats = () => {
-      const stats = products.map((product) => {
-        const redeemed = transactions.filter((transaction) => transaction.productId === product.id);
-        const totalQuantity = redeemed.reduce((total, transaction) => total + transaction.count, 0);
-        const totalSpent = redeemed.reduce((total, transaction) => total + transaction.totalSpent, 0);
-
-        return {
-          ...product,
-          totalQuantity,
-          totalSpent
-        };
-      });
-      setProductStats(stats);
-    };
-
-    calculateProductStats();
-  }, [transactions, products]);
+  const productStats = useProductStats(); // Use the custom hook to get product stats
+  const { products } = useProducts();
+  const { users } = useUsers();
 
   // Filter out products with zero redeemed quantity and sort
   const topProducts = productStats
     .filter(product => product.totalQuantity > 0) // Only include products with non-zero redeemed quantity
-    .sort((a, b) => b.totalQuantity - a.totalQuantity) 
+    .sort((a, b) => b.totalQuantity - a.totalQuantity)
     .slice(0, 3);
 
   // Pie chart data
@@ -60,11 +39,11 @@ const AdminDashboard = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'right', // Place the legend to the right of the pie chart
-        align: 'side',    // Align legend at the top of the right side
+        position: 'right',
+        align: 'side',
         labels: {
-          boxWidth: 12, // Adjust the size of the legend box
-          padding: 10,  // Space between the legend items
+          boxWidth: 12,
+          padding: 10,
         },
         title: {
           display: true,
@@ -122,15 +101,13 @@ const AdminDashboard = () => {
         {/* Top Redeemed Products (Pie Chart) */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h3 className="text-2xl font-semibold text-gray-800 text-center">Most Redeemed Products (up to top 3)</h3>
-          <div className="mt-4 flex justify-center items-center overflow-x-auto"> 
+          <div className="mt-4 flex justify-center items-center overflow-x-auto">
             {/* Only show the Pie chart if we have data */}
             {topProducts.length === 0 ? (
               <p className="text-gray-500">No products have been redeemed yet.</p>
             ) : (
-              <div className="flex flex-row justify-center items-center">
-                <div className="relative w-64 h-64"> {/* Adjust the size of the pie chart */}
-                  <Pie data={pieChartData} options={pieChartOptions} />
-                </div>
+              <div className="relative w-64 h-64">
+                <Pie data={pieChartData} options={pieChartOptions} />
               </div>
             )}
           </div>

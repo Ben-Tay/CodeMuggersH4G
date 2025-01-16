@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUsers } from '../components/UserContext'; // Import useUsers from context
 
 const Login = () => {
-  const { users, loginUser } = useUsers(); // Access users and loginUser from context
+  const { users, loginUser, loggedInUser } = useUsers(); // Access users and loginUser from context
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userRole, setUserRole] = useState('Resident');
@@ -20,24 +20,22 @@ const Login = () => {
         (u) => u.email === email && u.password === password
       );
 
-      console.log(`User is ${user}`);
-
       if (user) {
         loginUser(user); // Log in the user
+        console.log("User logged in, navigating...");
 
-        // Navigate after the user context is updated
-        setTimeout(() => {
-          if (userRole === 'Resident') {
+        // Direct navigation based on the user role
+        if (userRole === 'Resident') {
             navigate('/users/profile');
           } else if (userRole === 'Admin') {
             navigate('/admin/profile');
-          }
-        }, 500); // Wait a moment to allow context to update
+        }
+        
       } else {
-        console.log(error);
         setError('Invalid email or password');
       }
     } catch (error) {
+      console.log("Error during login:", error);
       setError('An error occurred. Please try again later.');
     }
   };
