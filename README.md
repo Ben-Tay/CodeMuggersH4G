@@ -1,5 +1,6 @@
-# CodeMuggersH4G
-This is the repository for the Hack4Good project by team `Code Muggers`.
+# CodeMuggersH4G & Credits
+This is the repository for the Hack4Good project by team `Code Muggers`.  
+Done by `Benedict Tay Haoze, Koh Swee Hong`.
 
 ## Problem Statement
 Design and develop a web-based Minimart and Voucher System for Muhammadiyah Welfare Home, enabling users to request products and earn vouchers while providing administrators with robust management and reporting tools for `Muhammadiyah Welfare Home`.
