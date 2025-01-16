@@ -25,12 +25,14 @@ const Login = () => {
       if (user) {
         loginUser(user); // Log in the user
 
-        // Navigate based on user role
-        if (userRole === "Resident") {
-          navigate('/users/profile'); // Redirect to the user dashboard
-        } else if (userRole === "Admin") {
-          navigate('/admin/profile'); // Redirect to the admin dashboard
-        }
+        // Navigate after the user context is updated
+        setTimeout(() => {
+          if (userRole === 'Resident') {
+            navigate('/users/profile');
+          } else if (userRole === 'Admin') {
+            navigate('/admin/profile');
+          }
+        }, 500); // Wait a moment to allow context to update
       } else {
         console.log(error);
         setError('Invalid email or password');
