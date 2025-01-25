@@ -47,7 +47,7 @@ const AdminDashboard = () => {
         },
         title: {
           display: true,
-          text: 'Redeemed Products'
+          text: 'Products'
         }
       }
     }
